@@ -1,0 +1,22 @@
+{
+  "name": "led-jar",
+  "version": "0.0.0",
+  "description": "led-jar =======",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/evilmachina/led-jar.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evilmachina/led-jar/issues"
+  },
+  "dependencies": {
+    "serialport": "~1.2.5",
+    "socket.io": "~0.9.16"
+  }
+}
