@@ -14,47 +14,6 @@ serialPort.on('data', function(data) {
     console.log('data received: ' + data);
   });  
 var readyToSending = true;
-var numberOfLEDs = 72;
-
-var lightsOn = function(percentage, rgb){
-	/*var i = 0;
-	var ledArray = [];
-	var ledsOn = ~~((numberOfLEDs/2) * (percentage / 100));
-	var ledsOff = half - ledsOn;
-	
-
-	var ts = ledsOff <= tailSize ? ledsOff  : tailSize;
-
-	ledsOff = Math.max(ledsOff - tailSize, 0);
-
-	for( i = 0; i < ledsOff; i++){
-		ledArray.push([0,0,0]);
-	}
-	for( i = ts; i > 0; i--){
-		//var level = ((tailSize - i) / tailSize) * fade;
-		var level =((tailSize - i) / tailSize) * fade;
-		ledArray.push([rgb[0] * level, rgb[1] * level, rgb[2] * level]);
-	}
-	for( i = 0; i < ledsOn; i++){
-		ledArray.push(rgb);
-	}
-
-	var revercedLedArray = ledArray.slice(0).reverse();
-
-	var full = ledArray.concat(revercedLedArray);
-	*/
-	
-	var leds = ~~((numberOfLEDs) * (percentage / 100));
-	//console.log(leds);
-	serialPort.write(new Buffer([5, rgb[0], rgb[1], rgb[2], leds]), function(err, results) {
-		if(err){
-			console.log(err);
-		}
-    	readyToSending = true;
-  	});  
-	
-};
-
 
 var showAmplitude = function(data){
 	var buffer = [];
@@ -72,8 +31,6 @@ var showAmplitude = function(data){
         
 
     }
-   // console.log(buffer.length);
-    //readyToSending = true;
 	serialPort.write(new Buffer(buffer), function(err, results) {
 		if(err){
 			console.log(err);
