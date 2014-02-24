@@ -5,19 +5,35 @@ int beatPixels = 40;
 byte inByte = 0;
 int bytesread = 0;
 char code[36];
-
-Adafruit_NeoPixel strips[8] = {
-  Adafruit_NeoPixel(leds, 8, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 7, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 6, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 5, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 2, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 21, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 20, NEO_GRB + NEO_KHZ800),
-  Adafruit_NeoPixel(leds, 14, NEO_GRB + NEO_KHZ800)
+static unsigned char exp_map[256]={
+  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,
+  3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,5,5,5,
+  5,5,5,5,5,6,6,6,6,6,6,6,7,7,7,7,7,7,8,8,8,8,8,8,9,9,
+  9,9,10,10,10,10,10,11,11,11,11,12,12,12,13,13,13,13,
+  14,14,14,15,15,15,16,16,16,17,17,18,18,18,19,19,20,
+  20,20,21,21,22,22,23,23,24,24,25,26,26,27,27,28,29,
+  29,30,31,31,32,33,33,34,35,36,36,37,38,39,40,41,42,
+  42,43,44,45,46,47,48,50,51,52,53,54,55,57,58,59,60,
+  62,63,64,66,67,69,70,72,74,75,77,79,80,82,84,86,88,
+  90,91,94,96,98,100,102,104,107,109,111,114,116,119,
+  122,124,127,130,133,136,139,142,145,148,151,155,158,
+  161,165,169,172,176,180,184,188,192,196,201,205,210,
+  214,219,224,229,234,239,244,250,255
 };
 
-Adafruit_NeoPixel beat = Adafruit_NeoPixel(beatPixels, 22, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strips[8] = {
+  Adafruit_NeoPixel(72, 22, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 21, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 20, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 14, NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 2 , NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 5 , NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 7 , NEO_GRB + NEO_KHZ800),
+  Adafruit_NeoPixel(72, 6 , NEO_GRB + NEO_KHZ800)
+};
+
+Adafruit_NeoPixel beat = Adafruit_NeoPixel(beatPixels, 8, NEO_GRB + NEO_KHZ800);
 
 byte lastformat[72];
 boolean gettingPattern = false;
@@ -57,10 +73,19 @@ void updateAll(){
 }
 
 
-void oneDirection(int r, int g, int b, int percent, int strip){
+void oneDirection(int r, int g, int b, int percentage, int strip){
    
-  int leds = 72 * (percent/100.0);
-  strips[strip].setBrightness(100 * (percent/100.0));
+  int leds = 72 * (percentage/100.0);
+  int currentPWM = 255 * (percentage/100.0);
+  int brightness = exp_map[currentPWM];
+  //strips[strip].setBrightness(255 * (percent/100.0));
+  strips[strip].setBrightness(brightness);
+  /*Serial.print(strip);
+  Serial.print(" ");
+  Serial.print(percentage);
+  Serial.print(" ");
+  Serial.println(brightness);
+  */
   for(int i=0; i < 72; i++) {
      if(i <= leds){
        strips[strip].setPixelColor(i, r, g, b); 
@@ -77,7 +102,7 @@ void biDirectional(int r, int g, int b, int percent, int strip){
    
   int leds = 36 * (percent/100.0);
   strips[strip].setBrightness(255 * (percent/100.0));
-  
+ 
   for(int i=0; i < 36; i++) {
      if(i <= leds){
        strips[strip].setPixelColor(36 + i, r, g, b);
@@ -100,8 +125,10 @@ void setColor(int r, int g, int b, int percent, int strip, int mod){
     biDirectional(r, g, b, percent, strip);
 }
 
-void setBeat(int r, int g, int b, int percent){
-  beat.setBrightness(255 * (percent/100.0));
+void setBeat(int r, int g, int b, int percentage){
+  int currentPWM = 255 * (percentage/100.0);
+  int brightness = exp_map[currentPWM];
+  beat.setBrightness(brightness);
   for(int i=0; i < beatPixels; i++) {    
        beat.setPixelColor(i, r, g, b); 
   }
